@@ -55,6 +55,12 @@ from minagi import maat as maat_mod
 REGISTRY = tools_mod.ToolRegistry()
 maat_mod.register_maat_tools(REGISTRY)
 
+from minagi import ledger as ledger_mod
+from minagi import http_tool as http_tool_mod
+
+os.makedirs("runs", exist_ok=True)
+RECEIPTS = ledger_mod.ReceiptLedger(os.path.join("runs", "receipts.jsonl"))
+
 TOOLS_ON = True
 MAX_TOOL_CALLS = 4
 
@@ -366,6 +372,8 @@ def stream(prompt, max_new):
             call = calls[0]
             yield {"tool": {"name": call.name, "args": call.args}}
             result = tools_mod.execute(REGISTRY, call)
+            RECEIPTS.append("tool", {"name": call.name, "args": call.args,
+                                     "ok": result.get("ok", False)})
             res_text = tools_mod.result_text(result)
             out, caches, logits = _prefill_text(out, caches, tok, res_text, model)
             cur = out[:, -1:]
@@ -911,6 +919,8 @@ def main():
     c0 = _lc()
     TOOLS_ON = args.tools
     MAX_TOOL_CALLS = int(_g(c0, "interop.max_tool_calls", 4) or 0)
+
+    http_tool_mod.register_http_tools(REGISTRY, _g(c0, "interop", {}) or {})
 
     if not os.path.exists(os.path.join(args.weights, "core.npz")):
         raise SystemExit(

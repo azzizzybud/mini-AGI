@@ -52,6 +52,9 @@ from minagi import store as weights_store
 
 selfdir_log = []
 
+from minagi import ledger as ledger_mod
+from minagi import health as health_mod
+
 
 def lr_at(step, total, base, warmup, floor_frac=0.1):
     if step < warmup:
@@ -1007,6 +1010,8 @@ def cmd_read(args):
     grads = collections.deque(maxlen=400)      # and the gradient norms
     last_save = time.time()
     last_held = None
+    os.makedirs("runs", exist_ok=True)
+    receipts = ledger_mod.ReceiptLedger(os.path.join("runs", "receipts.jsonl"))
     mark_t, mark_c = time.time(), 0            # for the reading rate
     tracer = (_Tracer(args.trace_routes, args.trace_chunks)
               if args.trace_routes else None)
@@ -1220,6 +1225,11 @@ def cmd_read(args):
                                          pool, grower,
                                          recent[-1] if recent else None,
                                          last_held, args.selfdir_max_new)
+                    if len(recent) >= 4:
+                        h = health_mod.certify(list(recent)[-32:])
+                        receipts.append("health", h)
+                        if not h["cm"]:
+                            print(f"    health: {h['verdict']}", flush=True)
                     gone = pool.prune(step, survival=survival_steps) \
                         if args.save else 0
                     # Whether the model may grow is asked of the model as
