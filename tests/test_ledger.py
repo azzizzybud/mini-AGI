@@ -46,6 +46,13 @@ class LedgerTests(unittest.TestCase):
         self.assertEqual(len(lg2.entries), 1)
         self.assertEqual(lg2.entries[0]["payload"], {"x": 1})
 
+    def test_append_missing_dir_does_not_raise(self):
+        import os
+        bad = os.path.join(self.dir, "no", "such", "dir", "receipts.jsonl")
+        lg = ledger.ReceiptLedger(bad)
+        e = lg.append("a", {"x": 1})     # must not raise
+        self.assertEqual(e["kind"], "a")
+
 
 if __name__ == "__main__":
     unittest.main()

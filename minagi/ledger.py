@@ -41,8 +41,12 @@ class ReceiptLedger:
     def append(self, kind, payload):
         e = self._entry(kind, payload)
         self.entries.append(e)
-        with open(self.path, "a") as f:
-            f.write(json.dumps(e, sort_keys=True) + "\n")
+        try:
+            with open(self.path, "a") as f:
+                f.write(json.dumps(e, sort_keys=True) + "\n")
+        except OSError as err:
+            import sys
+            print(f"[ledger] write failed: {err}", file=sys.stderr)
         return e
 
     def verify(self):
