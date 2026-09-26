@@ -28,6 +28,7 @@ BUILDERS = {"code": "corpora.code",
             "fetch": "corpora.fetch",
             "reasoning": "corpora.reasoning",
             "tool_use": "corpora.tool_use",
+            "self_direction": "corpora.self_direction",
             "pg19": "corpora.pg19",
             "all": "corpora.build"}
 

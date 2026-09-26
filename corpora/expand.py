@@ -48,6 +48,7 @@ SOURCES = [
     ("chat", "data_chat_char", ".txt"),
     ("chess", "data_chess_char", ".txt"),
     ("tool_use", "data_tool_use_char", ".txt"),
+    ("self_direction", "data_self_direction_char", ".txt"),
 ]
 
 
