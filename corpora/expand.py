@@ -47,6 +47,7 @@ SOURCES = [
     ("arithmetic", "data_math_char", ".txt"),
     ("chat", "data_chat_char", ".txt"),
     ("chess", "data_chess_char", ".txt"),
+    ("tool_use", "data_tool_use_char", ".txt"),
 ]
 
 
