@@ -1010,6 +1010,7 @@ def cmd_read(args):
     grads = collections.deque(maxlen=400)      # and the gradient norms
     last_save = time.time()
     last_held = None
+    held_hist = []
     os.makedirs("runs", exist_ok=True)
     receipts = ledger_mod.ReceiptLedger(os.path.join("runs", "receipts.jsonl"))
     mark_t, mark_c = time.time(), 0            # for the reading rate
@@ -1135,6 +1136,12 @@ def cmd_read(args):
                         se_ = d.pop("stderr", None)
                         v_ = float(np.mean(list(d.values())))
                         last_held = v_
+                        held_hist.append(v_)
+                        if len(held_hist) >= 4:
+                            h = health_mod.certify(held_hist[-32:])
+                            receipts.append("health", h)
+                            if not h["cm"]:
+                                print(f"    health: {h['verdict']}", flush=True)
                         # The generalisation gap, kept for the growth
                         # decision. It is the thing the density ceiling was
                         # always a proxy for, and unlike density it is
@@ -1225,11 +1232,6 @@ def cmd_read(args):
                                          pool, grower,
                                          recent[-1] if recent else None,
                                          last_held, args.selfdir_max_new)
-                    if len(recent) >= 4:
-                        h = health_mod.certify(list(recent)[-32:])
-                        receipts.append("health", h)
-                        if not h["cm"]:
-                            print(f"    health: {h['verdict']}", flush=True)
                     gone = pool.prune(step, survival=survival_steps) \
                         if args.save else 0
                     # Whether the model may grow is asked of the model as
