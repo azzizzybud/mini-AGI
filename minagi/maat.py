@@ -63,6 +63,8 @@ def maat_judge(name, is_verified=False, is_open_source=False,
                    security_scan_result,
                    "" if sec_verdict == "PASS" else
                    "No security scan. Run SkillSpector first."))
+    # Simplified port: a per-gate DEFER (e.g. an unknown security scan) is
+    # flattened to FAIL here; wire the live MCP for true three-valued defer.
     verdict = "PASS" if all(x["verdict"] == "PASS" for x in gates) else "FAIL"
     return {"verdict": verdict, "gates": gates}
 

@@ -244,6 +244,16 @@ def build_prompt(messages, budget, prime=""):
 
 
 def where(caches):
+    """
+    The position the next character sits at: however much history the
+    cache still holds after trimming.
+
+    NOT a running count. Rotary tables are built for positions 0 to
+    block-1, so a counter that saturates at `block` asks for position
+    `block` on the very next character and the model refuses. Reading it
+    back off the cache cannot drift, because the cache is the thing the
+    positions have to agree with.
+    """
     for c in caches:
         if c.get("k") is not None:
             return c["k"].shape[-2]
