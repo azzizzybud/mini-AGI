@@ -59,7 +59,11 @@ def parse_directive(text):
     body = text[body_start:end]
     m = _LR.search(body)
     if m:
-        return Directive("lr", max(LR_MIN, min(LR_MAX, float(m.group(1)))))
+        try:
+            v = float(m.group(1))
+        except ValueError:
+            return None
+        return Directive("lr", max(LR_MIN, min(LR_MAX, v)))
     m = _GROW.search(body)
     if m:
         return Directive("grow", int(m.group(1)))

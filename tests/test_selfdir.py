@@ -31,6 +31,11 @@ class ParseTests(unittest.TestCase):
     def test_missing_tag_is_none(self):
         self.assertIsNone(selfdir.parse_directive("lr x1.05"))
 
+    def test_lr_malformed_numeric_is_none(self):
+        self.assertIsNone(selfdir.parse_directive("<policy>\nlr x1.2.3\n</policy>"))
+        self.assertIsNone(selfdir.parse_directive("<policy>\nlr x.\n</policy>"))
+        self.assertIsNone(selfdir.parse_directive("<policy>\nlr x..\n</policy>"))
+
 
 class ApplyTests(unittest.TestCase):
     def test_lr_scales_within_ceiling(self):
