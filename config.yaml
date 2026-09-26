@@ -179,3 +179,11 @@ selfdir:
   # may emit a <policy> directive (lr xN.NN clamped to [0.5, 2.0], grow 0|1).
   enabled: false
   max_new: 64             # characters the model may write to state a directive
+
+receipts:
+  path: runs/receipts.jsonl   # append-only, tamper-evident record of agent actions
+
+health:
+  # Discrete complete-monotonicity certificate over the recent held-out loss
+  # trajectory (reuses the verified cos-obstruction from the RH work).
+  window: 32                  # how many recent evaluations the certificate covers
