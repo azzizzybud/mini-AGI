@@ -165,3 +165,10 @@ plots:
   enabled: true           # redraw the graphs whenever the sample log grows
   last: 100               # millions of characters the recent-progress graph
                           # covers, counted back from wherever reading has got
+
+interop:
+  # Tool-call loop (serve.py). The model may emit <tool>...</tool> blocks and
+  # the harness executes them against the registry (Ma'at gates + HTTP tools).
+  max_tool_calls: 4        # tool calls allowed per reply, to prevent loops
+  http_timeout: 10.0       # seconds for a generic HTTP tool
+  tools: tools.yaml        # optional: name -> {url, method, headers} map
