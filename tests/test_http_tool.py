@@ -43,6 +43,11 @@ class HttpToolTests(unittest.TestCase):
         self.assertFalse(out.get("ok"))
         self.assertIn("error", out)
 
+    def test_register_skips_non_dict_tools(self):
+        reg = tools.ToolRegistry()
+        http_tool.register_http_tools(reg, {"tools": "tools.yaml"})
+        self.assertEqual(reg.available(), [])
+
 
 if __name__ == "__main__":
     unittest.main()

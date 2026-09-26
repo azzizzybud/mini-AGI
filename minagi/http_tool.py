@@ -19,11 +19,11 @@ def build_http_tool(name, spec):
     timeout = float(spec.get("timeout") or 10.0)
 
     def call(args):
-        data = json.dumps(args).encode("utf-8")
         hdrs = {"Content-Type": "application/json"}
         hdrs.update(headers)
-        req = urllib.request.Request(url, data=data, headers=hdrs, method=method)
         try:
+            data = json.dumps(args).encode("utf-8")
+            req = urllib.request.Request(url, data=data, headers=hdrs, method=method)
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 body = r.read().decode("utf-8")
             try:
@@ -42,6 +42,8 @@ def build_http_tool(name, spec):
 
 def register_http_tools(registry, cfg, timeout=10.0):
     mapping = cfg.get("tools") or {}
+    if not isinstance(mapping, dict):
+        return
     for name, spec in mapping.items():
         spec = dict(spec)
         spec.setdefault("timeout", timeout)
