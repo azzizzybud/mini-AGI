@@ -172,3 +172,10 @@ interop:
   max_tool_calls: 4        # tool calls allowed per reply, to prevent loops
   http_timeout: 10.0       # seconds for a generic HTTP tool
   tools: tools.yaml        # optional: name -> {url, method, headers} map
+
+selfdir:
+  # Self-directed learning (train.py). Off by default. When --selfdir is
+  # passed, the model reads its own <self> telemetry at the growth cadence and
+  # may emit a <policy> directive (lr xN.NN clamped to [0.5, 2.0], grow 0|1).
+  enabled: false
+  max_new: 64             # characters the model may write to state a directive
