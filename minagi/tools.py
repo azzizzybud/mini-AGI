@@ -52,6 +52,8 @@ def _decode_body(body):
         obj = json.loads(body)
     except ValueError:
         return None
+    if not isinstance(obj, dict):
+        return None
     name = obj.get("name")
     args = obj.get("args") or {}
     if not isinstance(name, str) or not isinstance(args, dict):

@@ -22,6 +22,10 @@ class ParseTests(unittest.TestCase):
         text = '<tool>\nnot json\n</tool>\n'
         self.assertEqual(tools.parse_tool_calls(text), [])
 
+    def test_skips_non_dict_json(self):
+        text = '<tool>\n[1, 2, 3]\n</tool>\n'
+        self.assertEqual(tools.parse_tool_calls(text), [])
+
     def test_parses_two_calls(self):
         text = ('<tool>\n{"name": "a", "args": {}}\n</tool>\n'
                 'noise'
