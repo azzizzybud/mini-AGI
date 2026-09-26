@@ -1199,6 +1199,8 @@ Add the argument in the `cmd_read` argument parser (next to `--sample-every`):
     ap.add_argument("--selfdir", action="store_true",
                     help="let the model steer its own learning rate and growth "
                          "at the growth cadence (advisory, clamped)")
+    ap.add_argument("--selfdir-max-new", type=int, default=64,
+                    help="characters the model may write to state a directive")
 ```
 
 Add, after `sample_now` (near line 1570), the helper:
